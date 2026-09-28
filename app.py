@@ -4,12 +4,15 @@ from sheets.transactions import TransactionService
 from telegram_bot.bot import TelegramBot
 
 
-def main():
+def create_bot():
     sheets_client = GoogleSheetsClient()
-
     user_service = UserService(sheets_client)
     transaction_service = TransactionService(sheets_client)
-    bot = TelegramBot(user_service, transaction_service)
+    return TelegramBot(user_service, transaction_service)
+
+
+def main():
+    bot = create_bot()
     bot.run()
 
 

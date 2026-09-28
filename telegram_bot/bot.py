@@ -275,10 +275,14 @@ class TelegramBot:
         else:
             await update.message.reply_text(message, reply_markup=keyboard)
 
-    def run(self):
+    def build_application(self):
         application = Application.builder().token(Config.TELEGRAM_BOT_TOKEN).build()
         application.add_handler(CommandHandler("start", self.start))
         application.add_handler(CallbackQueryHandler(self.handle_callback))
         application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, self.handle_message))
         application.add_error_handler(self.error_handler)
+        return application
+
+    def run(self):
+        application = self.build_application()
         application.run_polling()
