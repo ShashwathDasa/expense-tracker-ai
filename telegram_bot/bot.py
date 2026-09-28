@@ -1,4 +1,6 @@
+import time
 from datetime import date
+from uuid import uuid4
 
 from telegram import Update
 from telegram.ext import ContextTypes, Application, CommandHandler, MessageHandler, filters, CallbackQueryHandler
@@ -8,6 +10,7 @@ from config import Config
 from conversation.store import ConversationStore
 from telegram_bot.keyboards import create_option_keyboard, create_confirmation_keyboard
 from transaction.state import PendingTransactionStore
+from utils.logger import logger
 
 
 class TelegramBot:
@@ -33,7 +36,9 @@ class TelegramBot:
         if user is None:
             await update.message.reply_text("You are not authorized to use this bot.")
             return
-
+        request_id = uuid4().hex[:8]
+        request_start = time.perf_counter()
+        logger.info("Request started request_id=%s user=%s", request_id, user["username"])
         # -----------------------------------
         # HANDLE PENDING TRANSACTION INPUT
         # -----------------------------------
@@ -57,24 +62,29 @@ class TelegramBot:
             "transaction_service": self.transaction_service,
         }
 
+        processing_message = await update.message.reply_text("⏳ Processing...")
         history = self.conversation_store.get_history(chat_id)
-        agent = FinanceAgent(session)
+        agent = FinanceAgent(session, request_id)
         response, updated_history, transaction_draft = agent.respond(message, history)
         self.conversation_store.save_history(chat_id, updated_history)
+        await processing_message.delete()
         if transaction_draft:
             self.pending_transactions.create(chat_id, transaction_draft)
             await self.handle_transaction_draft(update, transaction_draft)
             return
 
         await update.message.reply_text(response)
+        self.log_request_completed(user, request_id, request_start)
+
+    def log_request_completed(self, user, request_id, request_start, status="success"):
+        duration = time.perf_counter() - request_start
+        logger.info("Request completed request_id=%s user=%s duration=%.2fs status=%s", request_id, user["username"],
+                    duration, status)
 
     async def error_handler(self, update: object, context: ContextTypes.DEFAULT_TYPE):
-        print("ERROR:")
-        print(context.error)
-        print(f"Exception while handling update: {context.error}")
+        logger.error("Unhandled exception while processing update: %s", context.error, exc_info=context.error)
         if isinstance(update, Update) and update.effective_message:
-            await update.effective_message.reply_text(
-                "Sorry, something went wrong while processing your request. Please try again.")
+            await update.effective_message.reply_text("Sorry, something went wrong while processing your request.")
 
     async def handle_transaction_draft(self, update, transaction):
         chat_id = update.effective_chat.id
@@ -227,6 +237,7 @@ class TelegramBot:
                 if user is None:
                     await query.edit_message_text("You are not authorized to perform this action.")
                     return
+
                 try:
                     self.transaction_service.add_transaction(user, transaction)
                     self.pending_transactions.clear(chat_id)
