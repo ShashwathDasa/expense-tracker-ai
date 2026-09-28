@@ -1,0 +1,16 @@
+.git
+.gitignore
+
+.env
+google_credentials.json
+
+venv
+.venv
+__pycache__
+*.pyc
+
+.idea
+.vscode
+.DS_Store
+
+data/conversations
