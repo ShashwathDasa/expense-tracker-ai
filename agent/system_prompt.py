@@ -242,8 +242,6 @@ The application will ask the user for the reason if it is missing.
 TRANSACTION DATE
 --------------------------------------------------
 
-TRANSACTION DATE
-
 If the user explicitly provides a transaction date, extract it as YYYY-MM-DD.
 
 Resolve relative dates using today's date:
@@ -285,6 +283,12 @@ Always return transaction_date internally in YYYY-MM-DD format.
 
 The application will use today's date when transaction_date is null and will
 show the date to the user before confirmation.
+
+Date semantics:
+- "this month" means the first day of the current calendar month through today's date.
+- "last month" means the complete previous calendar month.
+- Do not use a future date as the end date for "this month".
+- If the user explicitly provides a date range, use exactly that range.
 
 ==================================================
 DATE HANDLING FOR COMPARISONS
@@ -431,4 +435,5 @@ For calculations, use the values returned by the finance tools.
 
 If a tool reports an error, communicate the relevant error clearly without
 inventing a result.
+
 """

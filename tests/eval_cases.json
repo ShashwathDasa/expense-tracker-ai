@@ -1,0 +1,188 @@
+[
+  {
+    "name": "total_expenses_month",
+    "input": "How much did I spend this month?",
+    "expected_tool": "get_total_expenses",
+    "expected_args": {
+      "start_date": "this_month_start",
+      "end_date": "today",
+      "username": null
+    }
+  },
+  {
+    "name": "total_expenses_date_range",
+    "input": "How much did I spend between September 1 and September 15, 2026?",
+    "expected_tool": "get_total_expenses",
+    "expected_args": {
+      "start_date": "2026-09-01",
+      "end_date": "2026-09-15",
+      "username": null
+    }
+  },
+  {
+    "name": "category_summary",
+    "input": "How much did I spend on Food this month?",
+    "expected_tool": "get_category_summary",
+    "expected_args": {
+      "start_date": "this_month_start",
+      "end_date": "today",
+      "category": "Food",
+      "username": null
+    }
+  },
+  {
+    "name": "category_breakdown",
+    "input": "Show me my spending by category this month.",
+    "expected_tool": "get_category_summary",
+    "expected_args": {
+      "start_date": "this_month_start",
+      "end_date": "today",
+      "category": null,
+      "username": null
+    }
+  },
+  {
+    "name": "compare_months",
+    "input": "Compare my spending this month with last month.",
+    "expected_tool": "compare_expenses",
+    "expected_args": {
+      "period_1_start": "this_month_start",
+      "period_1_end": "today",
+      "period_2_start": "last_month_start",
+      "period_2_end": "last_month_end",
+      "username": null
+    }
+  },
+  {
+    "name": "compare_date_ranges",
+    "input": "Compare my spending from September 1 to September 15 with August 1 to August 15, 2026.",
+    "expected_tool": "compare_expenses",
+    "expected_args": {
+      "period_1_start": "2026-09-01",
+      "period_1_end": "2026-09-15",
+      "period_2_start": "2026-08-01",
+      "period_2_end": "2026-08-15",
+      "username": null
+    }
+  },
+  {
+    "name": "compare_categories",
+    "input": "Compare my Food spending this month with last month.",
+    "expected_tool": "compare_category_expenses",
+    "expected_args": {
+      "period_1_start": "this_month_start",
+      "period_1_end": "today",
+      "period_2_start": "last_month_start",
+      "period_2_end": "last_month_end",
+      "category": "Food",
+      "username": null
+    }
+  },
+  {
+    "name": "compare_multiple_categories",
+    "input": "Compare my category-wise spending this month with last month.",
+    "expected_tool": "compare_category_expenses",
+    "expected_args": {
+      "period_1_start": "this_month_start",
+      "period_1_end": "today",
+      "period_2_start": "last_month_start",
+      "period_2_end": "last_month_end",
+      "category": null,
+      "username": null
+    }
+  },
+  {
+    "name": "expense_basic",
+    "input": "I spent ₹500 on groceries today.",
+    "expected_tool": "extract_transaction",
+    "expected_args": {
+      "transaction_type": "Expense",
+      "amount": 500,
+      "category": "Groceries",
+      "transaction_date": "today",
+      "reason": null,
+      "from_account": null,
+      "to_account": null
+    }
+  },
+  {
+    "name": "expense_with_category",
+    "input": "I spent ₹1200 on Food yesterday.",
+    "expected_tool": "extract_transaction",
+    "expected_args": {
+      "transaction_type": "Expense",
+      "amount": 1200,
+      "category": "Food",
+      "transaction_date": "yesterday",
+      "reason": null,
+      "from_account": null,
+      "to_account": null
+    }
+  },
+  {
+    "name": "income",
+    "input": "I received ₹50000 salary today.",
+    "expected_tool": "extract_transaction",
+    "expected_args": {
+      "transaction_type": "Income",
+      "amount": 50000,
+      "category": null,
+      "transaction_date": "today",
+      "reason": "salary",
+      "from_account": null,
+      "to_account": null
+    }
+  },
+  {
+    "name": "transfer",
+    "input": "I transferred ₹10000 from HDFC to ICICI today.",
+    "expected_tool": "extract_transaction",
+    "expected_args": {
+      "transaction_type": "Transfer",
+      "amount": 10000,
+      "category": null,
+      "transaction_date": "today",
+      "reason": null,
+      "from_account": "HDFC",
+      "to_account": "ICICI"
+    }
+  },
+  {
+    "name": "investment",
+    "input": "I invested ₹10000 in mutual funds today.",
+    "expected_tool": "extract_transaction",
+    "expected_args": {
+      "transaction_type": "Investment",
+      "amount": 10000,
+      "category": null,
+      "transaction_date": "today",
+      "reason": "mutual funds",
+      "from_account": null,
+      "to_account": null
+    }
+  },
+  {
+    "name": "historical_expense",
+    "input": "I spent ₹800 on Food on September 10, 2026.",
+    "expected_tool": "extract_transaction",
+    "expected_args": {
+      "transaction_type": "Expense",
+      "amount": 800,
+      "category": "Food",
+      "transaction_date": "2026-09-10",
+      "reason": null,
+      "from_account": null,
+      "to_account": null
+    }
+  },
+  {
+    "name": "explicit_user",
+    "input": "How much did Shashwath spend this month?",
+    "expected_tool": "get_total_expenses",
+    "expected_args": {
+      "start_date": "this_month_start",
+      "end_date": "today",
+      "username": "Shashwath"
+    }
+  }
+]
